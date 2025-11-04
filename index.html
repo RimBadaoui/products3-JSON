@@ -94,17 +94,20 @@
 
     <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
     <script>
-        let products = [];
+        let allProducts = [];
+        let allCategories = [];
 
         $("#loadBtn").on("click", function(){
             const req = new XMLHttpRequest();
             req.open("GET", "https://rimbadaoui.github.io/products3-JSON/products.json", true); 
             req.onreadystatechange = function() {
                 if (this.readyState === 4 && this.status === 200) {
-                    const products = JSON.parse(this.responseText);
-                    const container = document.getElementById("result");
+                    allProducts = JSON.parse(this.responseText);
+                    const container = document.getElementById("products-info");
 
-                    products.forEach(product => {
+                    allCategories = [new Set(allProducts.map(p=> p.categories))];
+
+                    allProducts.forEach(product => {
                         const cats = product.categories.join(", ");
                         container.innerHTML += `
                         <h3>${product.name}</h3>
@@ -113,34 +116,46 @@
                         <p>Price: $${product.price}</p>
                         `;
                     });
+
+                    const dropdown = document.getElementById("#categorySelect");
+                    dropdown.innerHTML = "";
+                    allCategories.forEach(cat => {
+                        const opt = document.createElement("option");
+                        opt.value = cat;
+                        opt.textContent = cat;
+                        dropdown.appendChild(opt);
+                    });
+
+
+
                 }
             };
             req.send();
         });
 
-        let catsLoaded = false;
-        $("#categorySelect").on("click", function(){
-                if (catsLoaded) return;
-                //create a set of categories (no repeats) and add the categories of each item
-                const catsSet = new Set();
-                products.forEach(product => {
-                    const cats = product.categories;
-                    cats.forEach(cat => catsSet.add(cat));
-                });
+        // let catsLoaded = false;
+        // $("#categorySelect").on("click", function(){
+        //         if (catsLoaded) return;
+        //         //create a set of categories (no repeats) and add the categories of each item
+        //         const catsSet = new Set();
+        //         products.forEach(product => {
+        //             const cats = product.categories;
+        //             cats.forEach(cat => catsSet.add(cat));
+        //         });
 
-                //update options
-                let html = "<option value='default'>choose a category</option>";
-                catsSet.forEach(cat => {
-                    html += '<option value="' + cat + '">' + cat + '</option>'  
-                });
-                document.getElementById("categorySelect").innerHTML = html;
+        //         //update options
+        //         let html = "<option value='default'>choose a category</option>";
+        //         catsSet.forEach(cat => {
+        //             html += '<option value="' + cat + '">' + cat + '</option>'  
+        //         });
+        //         document.getElementById("categorySelect").innerHTML = html;
 
-                catsLoaded = true;
+        //         catsLoaded = true;
 
-            // });
+        //     // });
 
            
-        });
+        // });
 
         $("#filterBtn").on("click", function () {
             const chosen = $("#categorySelect").val();
@@ -156,4 +171,3 @@
     </script>
 </body>
 </html>
-
