@@ -104,8 +104,8 @@
                 if (this.readyState === 4 && this.status === 200) {
                     allProducts = JSON.parse(this.responseText);
                     const container = document.getElementById("products-info");
-
-                    allCategories = [new Set(allProducts.map(p=> p.categories))];
+                    
+                    allCategories = [...new Set(allProducts.flatMap(p => p.categories))];
 
                     allProducts.forEach(product => {
                         const cats = product.categories.join(", ");
@@ -117,7 +117,7 @@
                         `;
                     });
 
-                    const dropdown = document.getElementById("#categorySelect");
+                    const dropdown = document.getElementById("categorySelect");
                     dropdown.innerHTML = "";
                     allCategories.forEach(cat => {
                         const opt = document.createElement("option");
@@ -137,15 +137,15 @@
         // $("#categorySelect").on("click", function(){
         //         if (catsLoaded) return;
         //         //create a set of categories (no repeats) and add the categories of each item
-        //         const catsSet = new Set();
-        //         products.forEach(product => {
-        //             const cats = product.categories;
-        //             cats.forEach(cat => catsSet.add(cat));
-        //         });
+        //         // const catsSet = new Set();
+        //         // products.forEach(product => {
+        //         //     const cats = product.categories;
+        //         //     cats.forEach(cat => catsSet.add(cat));
+        //         // });
 
         //         //update options
         //         let html = "<option value='default'>choose a category</option>";
-        //         catsSet.forEach(cat => {
+        //         allCategories.forEach(cat => {
         //             html += '<option value="' + cat + '">' + cat + '</option>'  
         //         });
         //         document.getElementById("categorySelect").innerHTML = html;
