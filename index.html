@@ -118,7 +118,7 @@
                     });
 
                     const dropdown = document.getElementById("categorySelect");
-                    dropdown.innerHTML = "choose a category";
+                    dropdown.innerHTML = "";
                     allCategories.forEach(cat => {
                         const opt = document.createElement("option");
                         opt.value = cat;
@@ -160,7 +160,7 @@
         $("#filterBtn").on("click", function () {
             const chosen = $("#categorySelect").val();
             if (!chosen){
-                const allProductNames = products.map(p => '<span class="pName">' + p.name + '</span>');
+                const allProductNames = allProducts.map(p => '<span class="pName">' + p.name + '</span>');
                 $("#matches").html(allProductNames);
                 return;
             }
