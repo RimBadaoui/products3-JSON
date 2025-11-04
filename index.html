@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Products3</title>
+    <style>
+        body{
+            background-color: rgb(63, 101, 206);
+        }
+        #loadBtn{
+            background-color: rgb(145, 237, 237);
+            border: none;
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+            font-size: 30px;
+        }
+        .product{
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+        }
+        .name{
+            font-weight: bolder;
+            font-size: 30px;
+        }
+        .desc{
+            font-style: italic;
+        }
+        #result{
+            display: flex;
+            justify-content: space-between;
+        }
+        #matches{
+            font-size: 30px;
+            color: rgb(145, 237, 237);
+            font-weight: bolder;
+        }
+        #catLabel{
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+            font-size: 30px;
+            color: white;
+        }
+        #categorySelect{
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+            font-size: 20px;
+            background-color: rgb(201, 250, 250);
+        }
+        #filterBtn{
+            font-family: 'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif;
+            background-color: rgb(145, 237, 237);
+            border: 2px;
+            border-radius: 30%;
+            font-size: 20px;
+        }
+        #title{
+            font-size: 50px;
+            text-align: center;
+            color: rgb(145, 237, 237);
+            font-weight: bolder;
+        }
+        #instructions{
+            font-size: 25px;
+            text-align: center;
+            color: white;
+        }
+        hr{
+            height: 10px;
+            color: black;
+        }
+        #products-info{
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div id="title">Our Shop</div>
+    <hr>
+    <div id="instructions">
+        <b>How to use:</b><br>1. Read data for list of items<br>2. Filter for a specific category
+    </div>
+    <hr>
+    <div id="result">
+        <div class="read">    
+            <button id="loadBtn">Read Data</button>
+            <div id="products-info"></div>
+        </div>
+        <div class="categories">
+            <label for="categorySelect" id="catLabel">Category:</label>
+            <select id="categorySelect">
+                <option value="">choose a category</option>
+            </select>
+            <button id="filterBtn">Filter Data</button>
+            <div id="matches"></div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+    <script>
+        let products = [];
+
+        $("#loadBtn").on("click", function(){
+            $.get("products.json", function(data){
+                if(typeof data !== "object"){
+                    document.getElementById("products-info").innerHTML = "Failed to load products.json.";
+                    return;
+                }
+                //save data into an array for later use
+                products = data;
+
+                let html = "";
+                for (let i=0; i<data.length; i++){
+                    const product = data[i];
+                    const cats = Array.isArray(product.categories) ? product.categories.join(", ") : "";
+
+                    html+= 
+                        "<div class='product'>" +
+                            "<div class='name'>" + product.name + "</div>" +
+                            "<div class='desc'>" + product.description + "</div>" +
+                            "<div class='price'>Price: $" + product.price + "</div>" +
+                            "<div class='cats'>Categories: " + cats + "</div>" +
+                            "</div>";
+                }
+                document.getElementById("products-info").innerHTML = html;
+
+            });
+        });
+
+        let catsLoaded = false;
+        $("#categorySelect").on("click", function(){
+            // $.get("products.json", function(data){
+            //     if(typeof data !== "object"){
+            //         document.getElementById("result").innerHTML = "Failed to load products.json.";
+            //         return;
+            //     }
+                if (catsLoaded) return;
+                //create a set of categories (no repeats) and add the categories of each item
+                const catsSet = new Set();
+                products.forEach(product => {
+                    const cats = product.categories;
+                    cats.forEach(cat => catsSet.add(cat));
+                });
+
+                //update options
+                let html = "<option value='default'>choose a category</option>";
+                catsSet.forEach(cat => {
+                    html += '<option value="' + cat + '">' + cat + '</option>'  
+                });
+                document.getElementById("categorySelect").innerHTML = html;
+
+                catsLoaded = true;
+
+            // });
+
+           
+        });
+
+        $("#filterBtn").on("click", function () {
+            const chosen = $("#categorySelect").val();
+            if (!chosen){
+                const allProductNames = products.map(p => '<span class="pName">' + p.name + '</span>');
+                $("#matches").html(allProductNames);
+                return;
+            }
+            const filteredData = products.filter(p => p.categories.includes(chosen));
+            const html = filteredData.map(p => '<span class="pName">' + p.name + '</span>').join("<br>");
+            $("#matches").html(html || "no matches");
+        });
+    </script>
+</body>
+</html>

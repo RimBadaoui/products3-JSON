@@ -1,0 +1,32 @@
+[
+    {
+        "name": "Bucket Hat",
+        "description": "Stylish, trendy bucket hat to complete any outfit",
+        "price": 15,
+        "categories": ["hats", "accessories"]
+    },
+    {
+        "name": "Red Sox Cap",
+        "description": "A comfortable cap to keep the sun off your face",
+        "price": 40,
+        "categories": ["hats", "accessories", "athletics"]
+    },
+    {
+        "name": "Canvas Tote",
+        "description": "Reusable, stylish tote bag",
+        "price": 18,
+        "categories": ["accessories", "bags"]
+    },
+    {
+        "name": "Running Sneakers",
+        "description": "Cushioned sneakers built for running",
+        "price": 50,
+        "categories": ["sneakers", "athletics", "running"]
+    },
+    {
+        "name": "Drawstring Backpack",
+        "description": "Light-weight, flexible drawstring backpack",
+        "price": 40,
+        "categories": ["running", "athletics", "bags"]
+    }
+]
