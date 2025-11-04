@@ -97,39 +97,29 @@
         let products = [];
 
         $("#loadBtn").on("click", function(){
-            $.get("products.json", function(data){
-                if(typeof data !== "object"){
-                    document.getElementById("products-info").innerHTML = "Failed to load products.json.";
-                    return;
+            const req = new XMLHttpRequest();
+            req.open("GET", "https://rimbadaoui.github.io/products3-JSON/products.json", true); 
+            req.onreadystatechange = function() {
+                if (this.readyState === 4 && this.status === 200) {
+                    const products = JSON.parse(this.responseText);
+                    const container = document.getElementById("result");
+
+                    products.forEach(product => {
+                        const cats = product.categories.join(", ");
+                        container.innerHTML += `
+                        <h3>${product.name}</h3>
+                        <p>Description: ${product.description}</p>
+                        <p>Categories: ${cats}</p>
+                        <p>Price: $${product.price}</p>
+                        `;
+                    });
                 }
-                //save data into an array for later use
-                products = data;
-
-                let html = "";
-                for (let i=0; i<data.length; i++){
-                    const product = data[i];
-                    const cats = Array.isArray(product.categories) ? product.categories.join(", ") : "";
-
-                    html+= 
-                        "<div class='product'>" +
-                            "<div class='name'>" + product.name + "</div>" +
-                            "<div class='desc'>" + product.description + "</div>" +
-                            "<div class='price'>Price: $" + product.price + "</div>" +
-                            "<div class='cats'>Categories: " + cats + "</div>" +
-                            "</div>";
-                }
-                document.getElementById("products-info").innerHTML = html;
-
-            });
+            };
+            req.send();
         });
 
         let catsLoaded = false;
         $("#categorySelect").on("click", function(){
-            // $.get("products.json", function(data){
-            //     if(typeof data !== "object"){
-            //         document.getElementById("result").innerHTML = "Failed to load products.json.";
-            //         return;
-            //     }
                 if (catsLoaded) return;
                 //create a set of categories (no repeats) and add the categories of each item
                 const catsSet = new Set();
