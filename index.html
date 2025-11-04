@@ -118,7 +118,7 @@
                     });
 
                     const dropdown = document.getElementById("categorySelect");
-                    dropdown.innerHTML = "";
+                    dropdown.innerHTML = "choose a category";
                     allCategories.forEach(cat => {
                         const opt = document.createElement("option");
                         opt.value = cat;
@@ -164,7 +164,7 @@
                 $("#matches").html(allProductNames);
                 return;
             }
-            const filteredData = products.filter(p => p.categories.includes(chosen));
+            const filteredData = allProducts.filter(p => p.categories.includes(chosen));
             const html = filteredData.map(p => '<span class="pName">' + p.name + '</span>').join("<br>");
             $("#matches").html(html || "no matches");
         });
